@@ -4,8 +4,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/authContext';
 
-// --- Standalone UI Components (No styling changes) ---
-
 const Avatar = ({ src, alt, fallback, className = "" }) => (
   <div className={`relative flex shrink-0 overflow-hidden rounded-full ${className}`}>
     {src ? (
@@ -127,16 +125,19 @@ const BookingModal = ({ isOpen, onClose, mentor, selectedPlan }) => {
     const submissionData = {
       ...formData,
       date: selectedDate.toLocaleDateString("en-CA"), // YYYY-MM-DD format
-      mentorName: mentor?.name,
+      mentorName: mentor.username,
+      mentorId: mentor._id,
       planType: selectedPlan,
-      userId: user?._id
+      userId: user._id
     };
-
+    console.log(submissionData)
     try {
-      let res = await axios.post('https://projectv1-1.onrender.com/session/booking', submissionData);
+      let res = await axios.post('https://projectv1-1.onrender.com/session/booking', submissionData,{ withCredentials: true });
+      
       toast.success(res.data.message || "Booking Confirmed!", { theme: "dark" });
       onClose();
     } catch (err) {
+      console.log(err);
       toast.error("Booking failed. Please try again.", { theme: "dark" });
     }
   };
@@ -152,6 +153,29 @@ const BookingModal = ({ isOpen, onClose, mentor, selectedPlan }) => {
 
   const currentPlan = planDetails[selectedPlan] || planDetails.chat;
   const PlanIcon = currentPlan.icon;
+
+
+
+  const isTimeInPast = (slot) => {
+  const now = new Date();
+  const today = new Date();
+  if (selectedDate.toDateString() !== today.toDateString()) {
+    return false;
+  }
+  const [time, modifier] = slot.split(' ');
+  let [hours, minutes] = time.split(':');
+  
+  if (hours === '12') {
+    hours = modifier === 'PM' ? '12' : '00';
+  } else if (modifier === 'PM') {
+    hours = parseInt(hours, 10) + 12;
+  }
+
+  const slotDate = new Date(selectedDate);
+  slotDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+  return slotDate < now;
+};
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -189,17 +213,21 @@ const BookingModal = ({ isOpen, onClose, mentor, selectedPlan }) => {
               <label className="text-sm font-medium text-gray-300 flex items-center gap-2"><CalendarIcon className="w-4 h-4" /> Choose Date</label>
               <SimpleCalendar selected={selectedDate} onSelect={setSelectedDate} />
             </div>
+
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-300 flex items-center gap-2"><Clock className="w-4 h-4" /> Choose Time Slot</label>
               <div className="grid grid-cols-2 gap-2 max-h-[280px] overflow-y-auto p-3 border-2 border-gray-700 rounded-xl bg-gray-800">
                 {timeSlots.map((slot) => (
-                  <button key={slot} type="button" onClick={() => setFormData({ ...formData, timeSlot: slot })}
+                   
+                  <button key={slot} type="button" disabled={isTimeInPast(slot)}  onClick={() => !isTimeInPast(slot) && setFormData({ ...formData, timeSlot: slot })}
                     className={`p-2.5 text-sm rounded-lg border-2 transition-all ${formData.timeSlot === slot ? 'bg-blue-600 text-white border-blue-500' : 'bg-gray-900 border-gray-700 text-gray-300'}`}>
-                    {slot}
+                    {slot} 
                   </button>
                 ))}
               </div>
             </div>
+
+
           </div>
 
           <Textarea label="Message (Optional)" name="message" value={formData.message} onChange={handleInputChange} />
@@ -230,9 +258,9 @@ export const MentorCard = ({ mentor }) => {
       <div className="group relative w-full max-w-sm overflow-hidden rounded-3xl bg-gray-900 border-2 border-gray-800 shadow-xl transition-all duration-500 hover:scale-[1.02]">
         <div className="relative p-6 bg-[#131313]">
           <div className="flex items-start gap-4 mb-6">
-            <Avatar src={mentor.image} alt={mentor.name} fallback={mentor.name.split(' ').map(n => n[0]).join('')} className="h-20 w-20 border-4 border-gray-800" />
+            <Avatar src={mentor.image} alt={mentor.name} fallback={mentor.username.split(' ').map(n => n[0]).join('')} className="h-20 w-20 border-4 border-gray-800" />
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-white truncate">{mentor.name}</h3>
+              <h3 className="text-xl font-bold text-white truncate">{mentor.username}</h3>
               <Badge className="mb-2 bg-blue-600 text-white border-0">{mentor.specialization}</Badge>
               <div className="flex items-center gap-3 text-sm text-gray-400">
                 <div className="flex items-center gap-1"><Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />{mentor.rating}</div>

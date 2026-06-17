@@ -12,13 +12,16 @@ const SignUp = () => {
 
   let {handleRegister } = useContext(AuthContext);
   
+  let Navigate = useNavigate();
   
 
   const handleOnClick = async (e) => {
     try {
       e.preventDefault();
       let msg = await handleRegister(username, email, password);
-      toast(msg, { theme: "dark" });
+      toast("user signed up successfully", { theme: "dark" });
+      Navigate('/');
+
     } catch (e) {
       console.log(e.response.data.message);
       toast.error(e.response.data.message, { theme: "dark" });
@@ -54,7 +57,7 @@ const SignUp = () => {
         {/* GOOGLE BUTTON */}
         <div className="w-full flex flex-col gap-4">
           <div className="w-full h-12 bg-[#181A1B] text-white flex gap-4 items-center justify-center rounded cursor-pointer active:scale-95 transition-all">
-            <img className="w-5 h-5" src="../../src/assets/Images/google.png" alt="google" />
+            <img className="w-5 h-5" src="/google.png" alt="google" />
             <h1 className="font-normal text-sm">Sign up with Google</h1>
           </div>
 

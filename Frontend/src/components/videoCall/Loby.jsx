@@ -1,6 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
+
+
+import { IconButton, Stack, Tooltip } from '@mui/material';
+import { CallEnd, Mic, MicOff, Videocam, VideocamOff, ScreenShare } from '@mui/icons-material';
+import { useNavigate } from "react-router-dom";
+
+import { useContext } from "react";
+import {SocketContext} from "../context/socketContext";
+
+
 function Loby() {
     let [username, setUsername] = useState("");
     let [askUsername, setAskUsername] = useState(true);
@@ -8,12 +18,16 @@ function Loby() {
     let [audioAvailble, setAudioAvailble] = useState(true);
     let [ConnectionVideo, SetconnectionVideo] = useState(null);
 
-    let socketRef = useRef();
+    let [micOn, setMicOn] = useState(true);
+    let [cameraOn, setCameraOn] = useState(true)
+
     let localVideoRef = useRef();
     let connectionRef = useRef();
     let socketIdRef = useRef();
 
-    const server_url = 'http://localhost:8000';
+    let Navigate = useNavigate();
+    let {socketRef} = useContext(SocketContext); 
+    const server_url = 'https://projectv1-1.onrender.com';
 
     const peerConfigConnections = {
         'iceServers': [
@@ -38,7 +52,6 @@ function Loby() {
         }
     };
 
-    // Internal helper to keep the logic clean and dry
     const initializePeerConnection = (remoteId) => {
         const pc = new RTCPeerConnection(peerConfigConnections);
 
@@ -57,7 +70,6 @@ function Loby() {
             });
         };
 
-        // Add local tracks to the connection
         if (window.localStream) {
             window.localStream.getTracks().forEach(track => {
                 pc.addTrack(track, window.localStream);
@@ -97,11 +109,12 @@ function Loby() {
 
     // Keep function name same: Logic updated for 1-to-1 handshake
     const connectToServer = () => {
-        socketRef.current = io.connect(server_url, { secure: false });
+       // socketRef.current = io.connect(server_url, { secure: false });
 
         socketRef.current.on('signal', gotMessageFromServer);
 
-        socketRef.current.on('connect', () => {
+       // socketRef.current.on('connect', () => {
+
             socketRef.current.emit('join-call', window.location.href);
             socketIdRef.current = socketRef.current.id;
 
@@ -118,9 +131,10 @@ function Loby() {
                     connectionRef.current.close();
                     connectionRef.current = null;
                     SetconnectionVideo(null);
+
                 }
             });
-        });
+       
     };
 
     const getMedia = () => {
@@ -136,45 +150,141 @@ function Loby() {
         getPermission();
     }, []);
 
-    return (
-        <div className="min-h-screen bg-black text-white p-5 flex flex-col items-center">
-            {askUsername ? (
-                <div className="flex flex-col gap-4 w-full max-w-sm">
-                    <video ref={localVideoRef} autoPlay muted className="w-full rounded-lg bg-gray-900 border border-gray-700" />
-                    <input
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="w-full h-10 rounded px-3 bg-gray-800 text-white border border-gray-600"
-                        type="text"
-                        placeholder="username"
-                        value={username}
-                    />
-                    <button className='bg-blue-600 hover:bg-blue-700 py-2 rounded font-bold transition' onClick={connect}>Connect</button>
-                </div>
-            ) : (
-                <div className="relative w-full h-[80vh] bg-gray-900 rounded-xl overflow-hidden">
-                    {/* Remote Video (The other person) */}
-                    {ConnectionVideo ? (
-                        <video
-                            className="w-full h-full object-contain"
-                            autoPlay
-                            ref={el => { if (el && ConnectionVideo.stream) el.srcObject = ConnectionVideo.stream; }}
-                        />
-                    ) : (
-                        <div className="flex items-center justify-center h-full text-gray-500">Waiting for peer...</div>
-                    )}
+    const toggleMic = () => {
+        if (window.localStream) {
+            const audioTrack = window.localStream.getAudioTracks()[0];
+            if (audioTrack) {
+                audioTrack.enabled = !audioTrack.enabled;
+                setMicOn(audioTrack.enabled);
+            }
+        }
+    };
 
-                    <div className="absolute bottom-4 right-4 w-48 border-2 border-blue-500 rounded-md overflow-hidden bg-black shadow-2xl">
-                        <video 
-                            ref={(el) => { if(el) el.srcObject = window.localStream; }} 
-                            autoPlay 
-                            muted 
-                            className="w-full h-full object-cover scale-x-[-1]" 
-                        />
+    const toggleCamera = () => {
+        if (window.localStream) {
+            const videoTrack = window.localStream.getVideoTracks()[0];
+            if (videoTrack) {
+                videoTrack.enabled = !videoTrack.enabled;
+                setCameraOn(videoTrack.enabled);
+            }
+        }
+    };
+
+    const handleHangUp = () => {
+        if (connectionRef.current) connectionRef.current.close();
+        if (window.localStream) {
+            window.localStream.getTracks().forEach(track => track.stop());
+        }
+        if (socketRef.current) {
+        socketRef.current.emit('leave-call'); 
+        }
+        Navigate("/"); // Sabse clean reset
+    };
+
+
+const ControlBar = () => (
+  <Stack 
+    direction="row" 
+    spacing={2} 
+    sx={{ 
+      position: 'absolute', 
+      bottom: 30, 
+      left: '50%', 
+      transform: 'translateX(-50%)',
+      backgroundColor: 'rgba(0,0,0,0.6)',
+      padding: '10px 20px',
+      borderRadius: '50px',
+      backdropFilter: 'blur(10px)',
+      zIndex: 100
+    }}
+  >
+    {/* Mic Button */}
+    <Tooltip title={micOn ? "Mute Mic" : "Unmute Mic"}>
+      <IconButton 
+         onClick={toggleMic} 
+        sx={{ color: 'white', bgcolor: micOn ? 'transparent' : '#f44336' }}
+      >
+        {micOn ? <Mic /> : <MicOff />}
+      </IconButton>
+    </Tooltip>
+
+    {/* Hang Up Button */}
+    <Tooltip title="End Call">
+      <IconButton 
+        onClick={handleHangUp} 
+        sx={{ 
+          color: 'white', 
+          bgcolor: '#f44336', 
+          '&:hover': { bgcolor: '#d32f2f' },
+          width: '56px',
+          height: '56px'
+        }}
+      >
+                <CallEnd />
+            </IconButton>
+    </Tooltip>
+
+    {/* Video Button */}
+    <Tooltip title={cameraOn ? "Turn Off Video" : "Turn On Video"}>
+      <IconButton 
+        onClick={toggleCamera} 
+        sx={{ color: 'white', bgcolor: cameraOn ? 'transparent' : '#f44336' }}
+      >
+        {cameraOn ? <Videocam /> : <VideocamOff />}
+      </IconButton>
+    </Tooltip>
+
+    
+        </Stack>
+     );
+
+
+
+
+    return (
+    <div className="min-h-screen bg-black text-white p-5 flex flex-col items-center">
+        {askUsername ? (
+            <div className="flex flex-col gap-4 w-full max-w-sm">
+                <video ref={localVideoRef} autoPlay muted className="w-full rounded-lg bg-gray-900 border border-gray-700" />
+                <input
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full h-10 rounded px-3 bg-gray-800 text-white border border-gray-600"
+                    type="text"
+                    placeholder="username"
+                    value={username}
+                />
+                <button className='bg-blue-600 hover:bg-blue-700 py-2 rounded font-bold transition' onClick={connect}>Connect</button>
+            </div>
+        ) : (
+            <div className="relative w-full h-[95vh] bg-gray-900 rounded-xl overflow-hidden shadow-2xl border border-gray-800">
+                {/* Remote Video (The other person) */}
+                {ConnectionVideo ? (
+                    <video
+                        className="w-full h-full object-contain"
+                        autoPlay
+                        ref={el => { if (el && ConnectionVideo.stream) el.srcObject = ConnectionVideo.stream; }}
+                    />
+                ) : (
+                    <div className="flex items-center justify-center h-full text-gray-500 animate-pulse">
+                        Waiting for peer to join...
                     </div>
+                )}
+
+                <ControlBar />
+
+                {/* Local Self View */}
+                <div className="absolute bottom-4 right-4 w-32 md:w-48 border-2 border-blue-500 rounded-lg overflow-hidden bg-black shadow-2xl z-20">
+                    <video 
+                        ref={(el) => { if(el) el.srcObject = window.localStream; }} 
+                        autoPlay 
+                        muted 
+                        className="w-full h-full object-cover scale-x-[-1]" 
+                    />
                 </div>
-            )}
-        </div>
-    );
+            </div>
+        )}
+    </div>
+);
 }
 
 export default Loby;

@@ -4,7 +4,7 @@ import { Clock, Calendar, Video, AlertCircle } from "lucide-react";
 import NavBar from '../NavBar/NavBar'
 import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
-const MyBookings = () => {
+const ManageBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(new Date());
@@ -21,12 +21,12 @@ const MyBookings = () => {
   // 2. Fetch data from backend
   const fetchBookings = async () => {
     try {
-      const res = await axios.get("https://projectv1-1.onrender.com/session/myBookings",{
+      const res = await axios.get("https://projectv1-1.onrender.com/session/manageBookings",{
       withCredentials: true
     });
       console.log("bookings ...........");
       console.log(res);
-      setBookings(res.data.myBookings || []);
+      setBookings(res.data.bookings || []);
     } catch (e) {
       console.error("Fetch error:", e);
     } finally {
@@ -76,7 +76,7 @@ const MyBookings = () => {
 
   if (loading) {
     return (
-       <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/80 backdrop-blur-sm">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
     );
@@ -169,4 +169,5 @@ const MyBookings = () => {
   );
 };
 
-export default MyBookings;
+export default  ManageBookings;
+;

@@ -31,10 +31,10 @@ export const signup = async (req , res)=>{
         let token = createSecretToken(user._id);
         console.log(user);
         res.cookie("token", token, {
-                httpOnly: true,         
-                secure: true,           
-                sameSite: "none",       
-                maxAge: 24 * 60 * 60 * 1000, 
+              httpOnly: true,         
+              secure: true,           
+              sameSite: "none",       
+              maxAge: 24 * 60 * 60 * 1000, 
         });
         res.status(201).json({ message: "User signed in successfully", success: true, user });
 
