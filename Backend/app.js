@@ -23,7 +23,7 @@ import sessionRouter from "./routes/session.js";
 import mentorRouter from "./routes/mentor.js";
 
 app.use(cors({
-  origin: ['http://localhost:5174' , 'https://project-v1-338y.vercel.app'], 
+  origin: ['http://localhost:5173' , 'https://lexbridge-btw3.vercel.app'], 
   credentials: true               
 }));
 
