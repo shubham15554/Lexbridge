@@ -21,7 +21,7 @@ export const AuthProvider = ({children})=>{
         const checkUserOnRefresh = async () => {
         try {
             
-            const res = await axios.get("https://projectv1-1.onrender.com/user/profile", { withCredentials: true });
+            const res = await axios.get("https://lexbridge-m1oz.onrender.com/user/profile", { withCredentials: true });
             if (res.data.user) {
             setUser(res.data.user);
             }
@@ -40,7 +40,7 @@ export const AuthProvider = ({children})=>{
     const handleRegister = async (username , email , password)=>{
         try{ 
             
-            let res = await axios.post("https://projectv1-1.onrender.com/user/signup"  , {username , email , password},  { withCredentials: true });
+            let res = await axios.post("https://lexbridge-m1oz.onrender.com/user/signup"  , {username , email , password},  { withCredentials: true });
             
             if(res.data.user){
                 setUser(res.data.user);
@@ -58,7 +58,7 @@ export const AuthProvider = ({children})=>{
 
         try{ 
             
-            let res = await axios.post("https://projectv1-1.onrender.com/user/login"  , { email: userEmail , password : userPassword , role : userRole},  { withCredentials: true });
+            let res = await axios.post("https://lexbridge-m1oz.onrender.com/user/login"  , { email: userEmail , password : userPassword , role : userRole},  { withCredentials: true });
             if(res.data.user){
                 setUser(res.data.user);
                 return res.data.message;
@@ -73,7 +73,7 @@ export const AuthProvider = ({children})=>{
 
     const handleLogout = async () => {
         try {
-            const response = await axios.post("https://projectv1-1.onrender.com/user/logout", {}, { withCredentials: true });
+            const response = await axios.post("https://lexbridge-m1oz.onrender.com/user/logout", {}, { withCredentials: true });
             
             if (response.status === 200) {
             setUser(null); 

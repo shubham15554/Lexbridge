@@ -10,7 +10,7 @@ const MyBookings = () => {
   const [now, setNow] = useState(new Date());
   let {user } = useContext(AuthContext);
   let Navigate= useNavigate();
-  // 1. Update current time every minute to refresh "Join" button status
+
   useEffect(() => {
     console.log(user);
     const timer = setInterval(() => setNow(new Date()), 60000);
@@ -18,10 +18,9 @@ const MyBookings = () => {
     
   }, []);
 
-  // 2. Fetch data from backend
   const fetchBookings = async () => {
     try {
-      const res = await axios.get("https://projectv1-1.onrender.com/session/myBookings",{
+      const res = await axios.get("https://lexbridge-m1oz.onrender.com/session/myBookings",{
       withCredentials: true
     });
       console.log("bookings ...........");
@@ -38,10 +37,7 @@ const MyBookings = () => {
     fetchBookings();
   }, []);
 
-  /**
-   * 3. Helper to turn "2026-02-10" and "10:00 AM" into a real JS Date object
-   * This handles the 12-hour AM/PM format sent by your BookingModal.
-   */
+ 
   const parseDateTime = (dateStr, timeStr) => {
     if (!dateStr || !timeStr) return null;
     try {
@@ -52,7 +48,7 @@ const MyBookings = () => {
       if (modifier === "PM" && h < 12) h += 12;
       if (modifier === "AM" && h === 12) h = 0;
 
-      const dateObj = new Date(dateStr); // Parses "YYYY-MM-DD"
+      const dateObj = new Date(dateStr); 
       dateObj.setHours(h, parseInt(minutes, 10), 0);
       return dateObj;
     } catch (e) {
@@ -60,9 +56,6 @@ const MyBookings = () => {
     }
   };
 
-  /**
-   * 4. Check if the meeting is joinable (5 mins before start until 60 mins after)
-   */
   const isJoinable = (dateStr, timeStr) => {
     const start = parseDateTime(dateStr, timeStr);
     if (!start) return false;
@@ -83,7 +76,7 @@ const MyBookings = () => {
   }
 
   return (
-    <div className="bg-[#050505] min-h-screen"> {/* Yahan background dark kiya hai */}
+    <div className="bg-[#050505] min-h-screen"> 
     <NavBar/>
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">

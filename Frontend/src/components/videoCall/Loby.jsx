@@ -27,7 +27,7 @@ function Loby() {
 
     let Navigate = useNavigate();
     let {socketRef} = useContext(SocketContext); 
-    const server_url = 'https://projectv1-1.onrender.com';
+    const server_url = 'https://lexbridge-m1oz.onrender.com/';
 
     const peerConfigConnections = {
         'iceServers': [
@@ -35,7 +35,6 @@ function Loby() {
         ]
     };
 
-    // Keep function name same: Logic updated to handle tracks and stream assignment
     const getPermission = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -55,14 +54,14 @@ function Loby() {
     const initializePeerConnection = (remoteId) => {
         const pc = new RTCPeerConnection(peerConfigConnections);
 
-        // Handle ICE candidates
+       
         pc.onicecandidate = (event) => {
             if (event.candidate) {
                 socketRef.current.emit('signal', remoteId, JSON.stringify({ 'ice': event.candidate }));
             }
         };
 
-        // Modern track handling (replaces onaddstream)
+       
         pc.ontrack = (event) => {
             SetconnectionVideo({
                 socketId: remoteId,
@@ -80,13 +79,11 @@ function Loby() {
         return pc;
     };
 
-    // Keep function name same: Logic updated to handle async/await and connection init
     let gotMessageFromServer = async (fromId, message) => {
         var signal = JSON.parse(message);
 
         if (fromId === socketIdRef.current) return;
 
-        // If connection doesn't exist yet (the receiver side), create it
         if (!connectionRef.current) {
             initializePeerConnection(fromId);
         }
@@ -107,18 +104,17 @@ function Loby() {
         }
     };
 
-    // Keep function name same: Logic updated for 1-to-1 handshake
+   
     const connectToServer = () => {
-       // socketRef.current = io.connect(server_url, { secure: false });
+      
 
         socketRef.current.on('signal', gotMessageFromServer);
 
-       // socketRef.current.on('connect', () => {
+       
 
             socketRef.current.emit('join-call', window.location.href);
             socketIdRef.current = socketRef.current.id;
 
-            // When a second person joins, the first person starts the offer
             socketRef.current.on('user-joined', async (id) => {
                 const pc = initializePeerConnection(id);
                 const description = await pc.createOffer();
@@ -178,7 +174,7 @@ function Loby() {
         if (socketRef.current) {
         socketRef.current.emit('leave-call'); 
         }
-        Navigate("/"); // Sabse clean reset
+        Navigate("/"); 
     };
 
 
@@ -198,7 +194,6 @@ const ControlBar = () => (
       zIndex: 100
     }}
   >
-    {/* Mic Button */}
     <Tooltip title={micOn ? "Mute Mic" : "Unmute Mic"}>
       <IconButton 
          onClick={toggleMic} 
@@ -207,8 +202,6 @@ const ControlBar = () => (
         {micOn ? <Mic /> : <MicOff />}
       </IconButton>
     </Tooltip>
-
-    {/* Hang Up Button */}
     <Tooltip title="End Call">
       <IconButton 
         onClick={handleHangUp} 
@@ -224,7 +217,7 @@ const ControlBar = () => (
             </IconButton>
     </Tooltip>
 
-    {/* Video Button */}
+    
     <Tooltip title={cameraOn ? "Turn Off Video" : "Turn On Video"}>
       <IconButton 
         onClick={toggleCamera} 
@@ -257,7 +250,7 @@ const ControlBar = () => (
             </div>
         ) : (
             <div className="relative w-full h-[95vh] bg-gray-900 rounded-xl overflow-hidden shadow-2xl border border-gray-800">
-                {/* Remote Video (The other person) */}
+                
                 {ConnectionVideo ? (
                     <video
                         className="w-full h-full object-contain"
@@ -272,7 +265,7 @@ const ControlBar = () => (
 
                 <ControlBar />
 
-                {/* Local Self View */}
+            
                 <div className="absolute bottom-4 right-4 w-32 md:w-48 border-2 border-blue-500 rounded-lg overflow-hidden bg-black shadow-2xl z-20">
                     <video 
                         ref={(el) => { if(el) el.srcObject = window.localStream; }} 

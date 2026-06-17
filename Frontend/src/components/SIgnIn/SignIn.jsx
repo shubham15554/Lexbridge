@@ -9,12 +9,11 @@ const SignIn = () => {
   let { handleLogin } = useContext(AuthContext);
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const [role, setRole] = useState("user"); // New role state
+  const [role, setRole] = useState("user"); 
 
   const submitHandler = async (e) => {
     try {
       e.preventDefault();
-      // handleLogin mein role bhi pass kar rahe hain
       await handleLogin(userEmail, userPassword, role); 
       toast.success(`${role === 'mentor' ? 'Mentor' : 'User'} logged in successfully`, { theme: "dark" });
       navigate('/');
@@ -33,7 +32,6 @@ const SignIn = () => {
         <i className="ri-close-line"></i>
       </div>
 
-      {/* Main Card */}
       <div className="bg-[#0F0F0F] rounded-xl flex flex-col justify-center items-center p-6 w-full max-w-[400px] my-10 border border-gray-900">
         
         <div className="logo flex items-center justify-center mb-6">
@@ -47,14 +45,12 @@ const SignIn = () => {
           <p className="text-sm text-[#c7c2c2] font-medium">Login to manage your account</p>
         </div>
 
-        {/* Google Login Button */}
         <div className="w-full flex flex-col gap-4">
           <div className="w-full h-12 bg-[#181A1B] text-white flex gap-4 items-center justify-center rounded cursor-pointer active:scale-95 shadow-sm">
             <img className="w-5 h-5" src="/google.png" alt="" />
             <h1 className="font-normal text-sm">Sign in with Google</h1>
           </div>
 
-          {/* OR Divider */}
           <div className="flex items-center gap-2 my-2">
             <div className="h-[1px] bg-gray-800 flex-1"></div>
             <p className="text-gray-500 text-xs uppercase font-bold">or</p>
@@ -62,7 +58,6 @@ const SignIn = () => {
           </div>
         </div>
 
-        {/* --- ROLE SELECTION BOX --- */}
         <div className="flex w-full bg-[#181A1B] p-1 rounded-lg mb-4 border border-gray-800">
           <button 
             onClick={() => setRole("user")}
@@ -78,7 +73,6 @@ const SignIn = () => {
           </button>
         </div>
 
-        {/* Form Section */}
         <div className="text-white w-full">
           <form onSubmit={submitHandler} className="w-full">
             <div className="flex flex-col gap-2">

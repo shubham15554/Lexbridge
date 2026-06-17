@@ -96,8 +96,6 @@ const SimpleCalendar = ({ selected, onSelect }) => {
   );
 };
 
-// --- Updated Booking Modal Component ---
-
 const BookingModal = ({ isOpen, onClose, mentor, selectedPlan }) => {
   const { user } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -121,10 +119,10 @@ const BookingModal = ({ isOpen, onClose, mentor, selectedPlan }) => {
       return;
     }
 
-    // Prepare data exactly how the MyBookings page needs it
+    
     const submissionData = {
       ...formData,
-      date: selectedDate.toLocaleDateString("en-CA"), // YYYY-MM-DD format
+      date: selectedDate.toLocaleDateString("en-CA"), 
       mentorName: mentor.username,
       mentorId: mentor._id,
       planType: selectedPlan,
@@ -132,7 +130,7 @@ const BookingModal = ({ isOpen, onClose, mentor, selectedPlan }) => {
     };
     console.log(submissionData)
     try {
-      let res = await axios.post('https://projectv1-1.onrender.com/session/booking', submissionData,{ withCredentials: true });
+      let res = await axios.post('https://lexbridge-m1oz.onrender.com/session/booking', submissionData,{ withCredentials: true });
       
       toast.success(res.data.message || "Booking Confirmed!", { theme: "dark" });
       onClose();
@@ -242,7 +240,6 @@ const BookingModal = ({ isOpen, onClose, mentor, selectedPlan }) => {
   );
 };
 
-// --- Main Mentor Card Component ---
 
 export const MentorCard = ({ mentor }) => {
   const [selectedPlan, setSelectedPlan] = useState(null);

@@ -8,8 +8,8 @@ export const SocketProvider = ({ children }) => {
     const socketRef = useRef();
    let [isconnected, setIsConnected] = useState(false);
     useEffect(() => {
-        socketRef.current = io("https://projectv1-1.onrender.com", {
-            transports: ["websocket"], // Recommended for Render.com
+        socketRef.current = io("https://lexbridge-m1oz.onrender.com", {
+            transports: ["websocket"], 
         });
 
         socketRef.current.on("connect", () => {

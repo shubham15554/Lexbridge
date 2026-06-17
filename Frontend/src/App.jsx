@@ -25,7 +25,7 @@ const Mentors = () => {
       
     let fetchData = async ()=>{
           try{
-        let res = await axios.get("https://projectv1-1.onrender.com/mentor/allMentors", { withCredentials: true });
+        let res = await axios.get("https://lexbridge-m1oz.onrender.com/mentor/allMentors", { withCredentials: true });
         setMentorsList(res.data.mentors);
       }
       catch(err){
@@ -36,55 +36,6 @@ const Mentors = () => {
     fetchData();
       
   },[])
-
-
-  // const mentorsList = [
-  //   {
-  //     id: 1,
-  //     name: "Advocate Priya Sharma",
-  //     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400",
-  //     specialization: "Corporate Law",
-  //     experience: 12,
-  //     rating: 4.9,
-  //     bio: "Specialized in corporate compliance, mergers & acquisitions, and business contracts.",
-  //     sessions: 450,
-  //     students: 280,
-  //     responseTime: "< 2hrs",
-  //     chatPrice: 1500,
-  //     videoPrice: 3500,
-  //     verified: true,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Advocate Rajesh Kumar",
-  //     image: "https://images.unsplash.com/photo-1556157382-97eda2f9e2bf?w=400",
-  //     specialization: "Criminal Law",
-  //     experience: 15,
-  //     rating: 4.8,
-  //     bio: "Expert in criminal defense, civil litigation, and consumer rights.",
-  //     sessions: 620,
-  //     students: 410,
-  //     responseTime: "< 1hr",
-  //     chatPrice: 1800,
-  //     videoPrice: 4000,
-  //     verified: true,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Advocate Meera Desai",
-  //     image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400",
-  //     specialization: "Family Law",
-  //     experience: 10,
-  //     rating: 4.9,
-  //     bio: "Compassionate guidance in family disputes, divorce proceedings, and child custody.",
-  //     sessions: 380,
-  //     students: 220,
-  //     responseTime: "< 3hrs",
-  //     chatPrice: 1200,
-  //     videoPrice: 2800,
-  //     verified: true,
-  //   }
-  // ];
 
   return (
     <div className="min-h-screen bg-black">
