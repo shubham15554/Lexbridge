@@ -10,7 +10,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  let {handleRegister } = useContext(AuthContext);
+  let {handleRegister,handleGoogleLogin } = useContext(AuthContext);
   
   let Navigate = useNavigate();
   
@@ -27,6 +27,12 @@ const SignUp = () => {
       toast.error(e.response.data.message, { theme: "dark" });
     }
   };
+
+    const handleGoogleClick = ()=>{
+    console.log("Clicked");
+    handleGoogleLogin();
+  }
+
 
   return (
     <div className="main min-h-screen w-full bg-[#000000] select-none flex items-center justify-center p-4 relative overflow-x-hidden">
@@ -53,7 +59,7 @@ const SignUp = () => {
         </div>
 
         <div className="w-full flex flex-col gap-4">
-          <div className="w-full h-12 bg-[#181A1B] text-white flex gap-4 items-center justify-center rounded cursor-pointer active:scale-95 transition-all">
+          <div onClick={handleGoogleClick} className="w-full h-12 bg-[#181A1B] text-white flex gap-4 items-center justify-center rounded cursor-pointer active:scale-95 transition-all">
             <img className="w-5 h-5" src="/google.png" alt="google" />
             <h1 className="font-normal text-sm">Sign up with Google</h1>
           </div>
