@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {oauth2client} from '../utils/googleConfig.js'
 
-
+import axios from 'axios';
 export const signup = async (req , res)=>{
    try{
       let {username , email , password} = req.body;
