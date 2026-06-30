@@ -17,6 +17,7 @@ import axios from 'axios';
 import ManageBookings from './components/manageBookins/ManageBookings';
 import Chat from './components/Chat/Chat';
 import { SocketProvider } from './components/context/socketContext';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 const Mentors = () => {
 
    let [mentorsList , setMentorsList] = useState([]);
@@ -54,7 +55,9 @@ const Mentors = () => {
 
 const App = () => {
   return (
+
     <div>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <AuthProvider>
       <SocketProvider>
       <ToastContainer/>
@@ -71,6 +74,7 @@ const App = () => {
         </Routes>
         </SocketProvider>
       </AuthProvider>
+      </GoogleOAuthProvider>
     </div>
   )
 }

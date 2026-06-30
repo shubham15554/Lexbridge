@@ -117,23 +117,6 @@ const HomePage = () => {
       </div>
 
 
-<div className="hidden md:block banner mt-15">
-  <div className="slider" style={{ "--quantity": 10 }}>
-    <div className="item" style={{ "--position": 1 }}><img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f" alt="" /></div>
-    <div className="item" style={{ "--position": 2 }}><img src="https://images.unsplash.com/photo-1555374018-13a8994ab246" alt="" /></div>
-    <div className="item" style={{ "--position": 3 }}><img src="https://images.unsplash.com/photo-1528740561666-dc2479dc08ab" alt="" /></div>
-    <div className="item" style={{ "--position": 4 }}><img src="https://images.unsplash.com/photo-1593115057322-e94b77572f20" alt="" /></div>
-    <div className="item" style={{ "--position": 5 }}><img src="https://images.unsplash.com/photo-1505664063603-28e48ca204eb" alt="" /></div>
-    <div className="item" style={{ "--position": 6 }}><img src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6" alt="" /></div>
-    <div className="item" style={{ "--position": 7 }}><img src="https://images.unsplash.com/photo-1590012314607-cda9d9b699ae" alt="" /></div>
-    <div className="item" style={{ "--position": 8 }}><img src="https://images.unsplash.com/photo-1581091870627-3a4a3c1f1bfa" alt="" /></div>
-    <div className="item" style={{ "--position": 9 }}><img src="https://images.unsplash.com/photo-1614018453562-77f6180ce036" alt="" /></div>
-    <div className="item" style={{ "--position": 10 }}><img src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776" alt="" /></div>        
-  </div>
-  <h1 className="text-9xl text-[#031b38] font-bold absolute top-[40%] left-[20%]">
-    LEX <span className="text-[#dbaa2f]">BRIDGE</span>
-  </h1>
-</div>
 
       <Footer />
     </div>

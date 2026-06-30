@@ -6,7 +6,7 @@ import 'remixicon/fonts/remixicon.css';
 
 const SignIn = () => {
   const navigate = useNavigate();
-  let { handleLogin } = useContext(AuthContext);
+  let { handleLogin , handleGoogleLogin } = useContext(AuthContext);
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [role, setRole] = useState("user"); 
@@ -21,6 +21,11 @@ const SignIn = () => {
       toast.error(e.response?.data?.msg || "Login failed", { theme: "dark" });
     }
   };
+
+  const handleGoogleClick = ()=>{
+    console.log("Clicked");
+    handleGoogleLogin();
+  }
 
   return (
     <div className="main min-h-screen w-full bg-[#000000] select-none flex items-center justify-center p-4 relative overflow-x-hidden">
@@ -46,7 +51,8 @@ const SignIn = () => {
         </div>
 
         <div className="w-full flex flex-col gap-4">
-          <div className="w-full h-12 bg-[#181A1B] text-white flex gap-4 items-center justify-center rounded cursor-pointer active:scale-95 shadow-sm">
+
+          <div onClick={handleGoogleClick} className="w-full h-12 bg-[#181A1B] text-white flex gap-4 items-center justify-center rounded cursor-pointer active:scale-95 shadow-sm">
             <img className="w-5 h-5" src="/google.png" alt="" />
             <h1 className="font-normal text-sm">Sign in with Google</h1>
           </div>

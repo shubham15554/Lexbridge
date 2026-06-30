@@ -1,10 +1,13 @@
 import { Children } from "react";
-import { useState } from "react";
-import { createContext } from "react";
-import { useContext } from "react";
-import { useEffect } from "react";
-import axios from "axios";
 
+import { useContext } from "react";
+
+
+import { useState, useEffect, createContext } from "react";
+import axios from "axios";
+import {toast} from 'react-toastify';
+import {useGoogleLogin} from '@react-oauth/google';
+import { useNavigate } from "react-router-dom";
 
 
 export const AuthContext = createContext({});
@@ -15,7 +18,7 @@ export const AuthProvider = ({children})=>{
     let [user , setUser] = useState(null);
     let [loading, setLoading] = useState(true);
 
-
+    let navigate = useNavigate();
     useEffect(() => {
         
         const checkUserOnRefresh = async () => {
@@ -85,9 +88,42 @@ export const AuthProvider = ({children})=>{
     };
 
 
+      const googleResponse = async (authresult) => {
+      try {
+        setLoading(true);
+        const code = authresult.code;
+
+        const res = await axios.post(
+          "https://lexbridge-m1oz.onrender.com/user/googleAuth",
+          {
+            code: code,
+          },
+          { withCredentials: true }
+        );
+        
+        if(res.data.success){
+          setUser(res.data.user);
+          toast.success("Welcome to Wanderlust!");
+          navigate("/");
+          
+        }
+      } catch (err) {
+        console.log(err);
+      } finally{
+        setLoading(false);
+      }
+    };
+
+    const handleGoogleLogin = useGoogleLogin({
+        onSuccess: googleResponse,
+        onError: googleResponse,
+        flow: 'auth-code'
+    })
+
+
 
      
-    let data = {handleRegister ,handleLogin, handleLogout, user};
+    let data = {handleRegister ,handleLogin, handleLogout, handleGoogleLogin, user};
       
      if (loading) {
         return (
