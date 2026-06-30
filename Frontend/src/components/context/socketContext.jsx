@@ -27,7 +27,9 @@ export const SocketProvider = ({ children }) => {
         </SocketContext.Provider>
     );
     }else{
-      return <p>Socket is connecting.......</p>;
+      return (<div className="fixed inset-0 z-50 flex justify-center items-center bg-black/80 backdrop-blur-sm">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>)
     }
    
 };

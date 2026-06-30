@@ -195,8 +195,8 @@ const BookingModal = ({ isOpen, onClose, mentor, selectedPlan }) => {
               <div className="text-sm text-gray-400">{currentPlan.description}</div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-white">₹{currentPlan.price}</div>
-              <div className="text-xs text-gray-500">per hour</div>
+              {/* <div className="text-2xl font-bold text-white">₹{currentPlan.price}</div>
+              <div className="text-xs text-gray-500">per hour</div> */}
             </div>
           </div>
 
@@ -277,11 +277,11 @@ export const MentorCard = ({ mentor }) => {
           <div className="space-y-3">
             <button onClick={() => handlePlanSelect('chat')} className="w-full flex items-center justify-between p-4 rounded-xl border-2 border-gray-800 bg-black hover:border-blue-500 transition-all">
               <div className="flex items-center gap-3"><MessageSquare className="text-blue-400" /> <div className="text-left text-white font-semibold">Chat Session</div></div>
-              <div className="text-white font-bold">₹{mentor.chatPrice}</div>
+              {/* <div className="text-white font-bold">₹{mentor.chatPrice}</div> */}
             </button>
             <button onClick={() => handlePlanSelect('video')} className="w-full flex items-center justify-between p-4 rounded-xl border-2 border-gray-800 bg-black hover:border-blue-500 transition-all">
               <div className="flex items-center gap-3"><Video className="text-blue-400" /> <div className="text-left text-white font-semibold">Video Call</div></div>
-              <div className="text-white font-bold">₹{mentor.videoPrice}</div>
+              {/* <div className="text-white font-bold">₹{mentor.videoPrice}</div> */}
             </button>
           </div>
         </div>
