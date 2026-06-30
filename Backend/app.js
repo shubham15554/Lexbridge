@@ -28,8 +28,8 @@ app.use(cors({
 }));
 
 
-// import dns from 'dns';
-// dns.setServers(["1.1.1.1", "8.8.8.8"]);
+import dns from 'dns';
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 
 app.use("/user" , userRouter);
@@ -43,8 +43,8 @@ const start = async ()=>{
     server.listen(8000 , ()=>{
         console.log("server is listening on port: "+8000)
     });
-    let url = 'mongodb+srv://ry957933_db_user:4IZbQnCnH78h830S@lexbridge.ahjrza9.mongodb.net/?appName=lexbridge';
-     mongoose.connect(url)
+   
+     mongoose.connect(process.env.MONGO_URL)
     .then(()=>console.log("database connected"))
     .catch((e)=>console.log("database not connected"));
 
