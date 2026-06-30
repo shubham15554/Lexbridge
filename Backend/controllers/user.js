@@ -3,7 +3,7 @@ import User from "../models/user.js";
 import { createSecretToken } from "../utils/createToken.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import {oauth2client} from '../utils/googleConfig.js'
 
 
 export const signup = async (req , res)=>{
@@ -116,6 +116,45 @@ export const profile = async (req, res) => {
     });
   }
 };
+
+
+export const googleLogin = async (req , res)=>{
+
+  try{
+    console.log("req is coming");
+      let {code} = req.body;
+      let  googleRes = await oauth2client.getToken(code);
+      oauth2client.setCredentials(googleRes.tokens);
+      let userRes = await axios.get(`https://www.googleapis.com/oauth2/v2/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`)
+      let {email , name} = userRes.data;
+
+      let user = await User.findOne({email});
+      if(!user){
+         user = await User.create({
+          email,
+          name
+         })
+      }
+
+      let token = createSecretToken(user._id);
+        res.cookie("token", token, {
+            httpOnly: true,         
+            secure: true,           
+            sameSite: "none",       
+            maxAge: 24 * 60 * 60 * 1000, 
+        });
+
+
+     console.log("everything  done " , user);
+      res.status(200).json({ message: "User signed in successfully", success: true, user });
+ 
+   }
+   catch(err){
+    console.log(err);
+    res.status(500).json({ message: "Something went wrong", success: false });
+    
+   }
+}
 
 
 
