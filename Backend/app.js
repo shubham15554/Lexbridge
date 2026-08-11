@@ -46,7 +46,7 @@ const start = async ()=>{
    
      mongoose.connect(process.env.MONGO_URL)
     .then(()=>console.log("database connected"))
-    .catch((e)=>console.log("database not connected"));
+    .catch((e)=>console.log("database connection failed"));
 
     
 }

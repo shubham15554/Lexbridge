@@ -8,14 +8,15 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 const Chat = () => {
     
-    const { socketRef } = useContext(SocketContext);
+    const { socket } = useContext(SocketContext);
     const {user} = useContext(AuthContext);
     const [message, setMessage] = useState('');
     const [chatLog, setChatLog] = useState([]);
     const scrollRef = useRef(null);
 
     const roomId = "aadfdfa"; 
-    const socket = socketRef.current;
+   
+    
     useEffect(() => {
       
         if (!socket) return;
@@ -40,7 +41,7 @@ const Chat = () => {
             socket.off('user-joind-chat', handleUserJoined);
             socket.off('receive-message', handleReceiveMessage);
         };
-    }, [socketRef, roomId]);
+    }, [socket, roomId]);
 
 
     useEffect(() => {

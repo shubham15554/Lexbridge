@@ -26,7 +26,7 @@ function Loby() {
     let socketIdRef = useRef();
 
     let Navigate = useNavigate();
-    let {socketRef} = useContext(SocketContext); 
+    let {socket} = useContext(SocketContext); 
     const server_url = 'https://lexbridge-m1oz.onrender.com/';
 
     const peerConfigConnections = {
@@ -57,7 +57,7 @@ function Loby() {
        
         pc.onicecandidate = (event) => {
             if (event.candidate) {
-                socketRef.current.emit('signal', remoteId, JSON.stringify({ 'ice': event.candidate }));
+                socket.emit('signal', remoteId, JSON.stringify({ 'ice': event.candidate }));
             }
         };
 
@@ -93,7 +93,7 @@ function Loby() {
             if (signal.sdp.type === 'offer') {
                 const description = await connectionRef.current.createAnswer();
                 await connectionRef.current.setLocalDescription(description);
-                socketRef.current.emit('signal', fromId, JSON.stringify({ 'sdp': connectionRef.current.localDescription }));
+                socket.emit('signal', fromId, JSON.stringify({ 'sdp': connectionRef.current.localDescription }));
             }
         }
 
@@ -108,21 +108,21 @@ function Loby() {
     const connectToServer = () => {
       
 
-        socketRef.current.on('signal', gotMessageFromServer);
+        socket.on('signal', gotMessageFromServer);
 
        
 
-            socketRef.current.emit('join-call', window.location.href);
-            socketIdRef.current = socketRef.current.id;
+            socket.emit('join-call', window.location.href);
+            socketIdRef.current = socket.id;
 
-            socketRef.current.on('user-joined', async (id) => {
+            socket.on('user-joined', async (id) => {
                 const pc = initializePeerConnection(id);
                 const description = await pc.createOffer();
                 await pc.setLocalDescription(description);
-                socketRef.current.emit('signal', id, JSON.stringify({ 'sdp': pc.localDescription }));
+                socket.emit('signal', id, JSON.stringify({ 'sdp': pc.localDescription }));
             });
             
-            socketRef.current.on('user-left', () => {
+            socket.on('user-left', () => {
                 if (connectionRef.current) {
                     connectionRef.current.close();
                     connectionRef.current = null;
@@ -171,8 +171,8 @@ function Loby() {
         if (window.localStream) {
             window.localStream.getTracks().forEach(track => track.stop());
         }
-        if (socketRef.current) {
-        socketRef.current.emit('leave-call'); 
+        if (socket) {
+        socket.emit('leave-call'); 
         }
         Navigate("/"); 
     };
