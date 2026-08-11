@@ -110,10 +110,9 @@ export const manageBookings = async (req , res) => {
 export const markJoined = async (req, res) => {
   try {
     const currentUserId = req.user._id
-    const { sessionId } = req.params;              
-
-   console.log("Req is coming");
-    const sess = await Session.findById(sessionId);
+    const { sessionID } = req.params;              
+   
+    const sess = await Session.findById(sessionID);
 
     if (!sess) {
       return res.status(404).json({ message: "Session nahi mila" });

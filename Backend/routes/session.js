@@ -10,5 +10,5 @@ import { isMentor } from "../middleware/isMentor.js";
 router.post('/booking' ,protect, booking);
 router.get('/myBookings' , protect, myBookings);
 router.get('/manageBookings' , protect , isMentor , manageBookings);
-router.post('/markJoined/:sessionID' ,protect ,  markJoined);
+router.post('/markJoined/:sessionID' ,  markJoined);
 export default router;
