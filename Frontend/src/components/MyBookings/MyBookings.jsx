@@ -77,14 +77,14 @@ const MyBookings = () => {
   const isJoinable = (dateStr, timeStr, status) => {
     if (status === "completed" || status === "missed" || status === "cancelled") return false;
 
-    // const start = parseDateTime(dateStr, timeStr);
-    // if (!start) return false;
+    const start = parseDateTime(dateStr, timeStr);
+    if (!start) return false;
 
-    // const bufferStart = new Date(start.getTime() - 5 * 60000); // 5 mins buffer
-    // const end = new Date(start.getTime() + 60 * 60000);        // 60 mins duration
+    const bufferStart = new Date(start.getTime() - 5 * 60000); // 5 mins buffer
+    const end = new Date(start.getTime() + 60 * 60000);        // 60 mins duration
     
-    // return now >= bufferStart && now <= end;
-    return true;
+    return now >= bufferStart && now <= end;
+   
     
   };
 

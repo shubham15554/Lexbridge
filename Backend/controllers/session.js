@@ -106,7 +106,7 @@ export const manageBookings = async (req , res) => {
     }
 }
 
-
+//69a7b1ecc9adfa210501ff04
 export const markJoined = async (req, res) => {
   try {
     const currentUserId = req.user._id
@@ -117,7 +117,7 @@ export const markJoined = async (req, res) => {
     if (!sess) {
       return res.status(404).json({ message: "Session nahi mila" });
     }
-
+    
     if (currentUserId === sess.userId) {
       sess.isUserJoined = true;
       sess.userJoinedAt = new Date();
