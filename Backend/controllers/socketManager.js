@@ -19,7 +19,7 @@ export const connectToSocket = (server)=>{
         socket.join(path);
         socket.to(path).emit("user-joined", socket.id);
     
-      } );
+      });
 
         
         socket.on("signal", (toId, message) => {
