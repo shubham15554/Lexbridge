@@ -9,7 +9,7 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
    
-    socketRef.current = io("http://localhost:8000", {
+    socketRef.current = io("https://lexbridge-m1oz.onrender.com:8000", {
       transports: ["polling", "websocket"], 
       withCredentials: true,
       autoConnect: true,
