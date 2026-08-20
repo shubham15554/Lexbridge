@@ -18,6 +18,7 @@ export const connectToSocket = (server)=>{
 
       socket.on('join-call' , async (path , user , sessionID)=>{
         try{
+            
             console.log("a person joined as: " , user.role);
             console.log("sesion id" , sessionID);
             socket.join(path);
@@ -44,6 +45,7 @@ export const connectToSocket = (server)=>{
             await sess.save();
         }
         catch(err){
+            console.log(err);
            console.log("something went wrong");
         }
     
