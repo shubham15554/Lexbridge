@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
-
+import Session from "../models/session.js";
+import { configDotenv } from "dotenv";
 export const connectToSocket = (server)=>{
 
     const io = new Server(server , {
@@ -15,9 +16,36 @@ export const connectToSocket = (server)=>{
     io.on("connection" , (socket)=>{
       console.log("Something Connected");
 
-      socket.on('join-call' , (path)=>{
-        socket.join(path);
-        socket.to(path).emit("user-joined", socket.id);
+      socket.on('join-call' , async (path , user , sessionID)=>{
+        try{
+            console.log("a person joined as: " , user.role);
+            console.log("sesion id" , sessionID);
+            socket.join(path);
+            socket.to(path).emit("user-joined", socket.id);
+       
+            const currentUserId = user._id
+            const sess = await Session.findById(sessionID);
+
+            if (!sess) {
+               socket.emit('error-message', "Session not found");
+               return;
+            }
+            
+            if (currentUserId === sess.userId?.toString()) {
+               sess.isUserJoined = true;
+               sess.userJoinedAt = new Date();
+            } else if (currentUserId === sess.mentorId?.toString()) {
+                sess.isMentorJoined = true;
+                sess.mentorJoinedAt = new Date();
+            } else {
+                socket.emit('error-message', "You are not participant of this session");
+                return;
+            }   
+            await sess.save();
+        }
+        catch(err){
+           console.log("something went wrong");
+        }
     
       });
 

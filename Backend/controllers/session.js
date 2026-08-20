@@ -14,8 +14,8 @@ export const booking = async (req , res) => {
      console.log(formData);
      let newSession = new Session(formData);
      let code = uuid();
-    if(plan == 'video') newSession.meetingLink = `https://lexbridge-btw3.vercel.app/video/${code}`;
-    if(plan == 'chat') newSession.meetingLink = `https://lexbridge-btw3.vercel.app/chat/${code}`;
+    if(plan == 'video') newSession.meetingLink = `https://lexbridge-btw3.vercel.app/video/${newSession._id}`;
+    if(plan == 'chat') newSession.meetingLink = `https://lexbridge-btw3.vercel.app/chat/${newSession._id}`;
     await newSession.save();
      console.log(newSession);
      res.json({message : "Booking confirmed"});
@@ -24,7 +24,6 @@ export const booking = async (req , res) => {
        res.json({message : "Something went wrong"});
     }
 }
-
 
 export const myBookings = async (req, res) => {
   try {
@@ -35,66 +34,33 @@ export const myBookings = async (req, res) => {
       $or: [{ userId }, { mentorId: userId }],
     });
 
+    for (let b of bookings) {
+      if (b.status === "completed" || b.status === "cancelled" || b.status === "missed" || b.status === "mentor_absent" || b.status === "student_absent") {
+        continue;
+      }
+
+      const scheduledTime = new Date(`${b.date} ${b.timeSlot}`);
+      const timeDiff = (now - scheduledTime) / (1000 * 60); // minutes
+      if (timeDiff > 60) {
+        
+        if (b.isMentorJoined && b.isUserJoined) {
+          b.status = "completed";
+        } else if (b.isMentorJoined && !b.isUserJoined) {
+          b.status = "student_absent";
+        } else if (!b.isMentorJoined && b.isUserJoined) {
+          b.status = "mentor_absent";
+        } else {
+          b.status = "missed"; 
+        }
+
+        await b.save();
+      }
+    }
+
     res.status(200).json({ success: true, myBookings: bookings });
-    
-   
+
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
-
-
-export const manageBookings = async (req , res) => {
-
-    try{
-        const mentorId = req.user._id;
-        let bookings = await Session.find({ mentorId: mentorId });
-        res.status(200).json({
-            success: true,
-            count: bookings.length,
-            bookings
-        });
-        
-    }
-    catch(err){
-        console.log(err);
-        res.json({message : "something went wrong"});
-    }
-}
-
 //69a7b1ecc9adfa210501ff04
-export const markJoined = async (req, res) => {
-  try {
-    const currentUserId = req.user._id
-    const { sessionID } = req.params;              
-   
-    const sess = await Session.findById(sessionID);
-
-    if (!sess) {
-      return res.status(404).json({ message: "Session nahi mila" });
-    }
-    
-    if (currentUserId === sess.userId) {
-      sess.isUserJoined = true;
-      sess.userJoinedAt = new Date();
-    } else if (currentUserId === sess.mentorId) {
-      sess.isMentorJoined = true;
-      sess.mentorJoinedAt = new Date();
-    } else {
-      return res.status(403).json({ message: "Aap is session ke participant nahi hain" });
-    }
-
-   
-    await sess.save();
-
-    return res.status(200).json({ 
-      message: "Marked as joined successfully", 
-      sess 
-    });
-
-  } catch (err) {
-    console.error("Error in markJoined:", err);
-    return res.status(500).json({ message: "Something went wrong" });
-  }
-};

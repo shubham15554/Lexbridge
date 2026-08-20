@@ -58,14 +58,19 @@ const ManageBookings = () => {
   };
 
  
-  const isJoinable = (dateStr, timeStr) => {
-    const start = parseDateTime(dateStr, timeStr);
-    if (!start) return false;
+    // Check if session is currently active
+  const isJoinable = (dateStr, timeStr, status) => {
+    // if (b.status === "completed" || b.status === "cancelled" || b.status === "missed" || b.status === "mentor_absent" || b.status === "student_absent") {
+    //     return false;
+    // }
+    // const start = parseDateTime(dateStr, timeStr);
+    // if (!start) return false;
 
-    const bufferStart = new Date(start.getTime() - 5 * 60000); 
-    const end = new Date(start.getTime() + 60 * 60000); 
+    // const bufferStart = new Date(start.getTime() - 5 * 60000); // 5 mins buffer
+    // const end = new Date(start.getTime() + 60 * 60000);        // 60 mins duration
     
-    return now >= bufferStart && now <= end;
+    // return now >= bufferStart && now <= end;
+   
     return true;
   };
 
@@ -174,11 +179,21 @@ const ManageBookings = () => {
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                           <CheckCircle className="w-3.5 h-3.5" /> Completed
                         </span>
-                      ) : b.status === "missed" ? (
+                      ) : b.status === "user-absent" ? (
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20">
                           <XCircle className="w-3.5 h-3.5" /> Missed
                         </span>
-                      ) : (
+                      ) : b.status === "mentor-absent" ? (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                          <XCircle className="w-3.5 h-3.5" /> Missed
+                        </span>
+                      ) 
+                      : b.status === "missed" ? (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                          <XCircle className="w-3.5 h-3.5" /> Missed
+                        </span>
+                      ) 
+                      : (
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-400 border border-slate-700/50">
                           Upcoming
                         </span>

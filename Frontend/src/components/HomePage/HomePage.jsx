@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import NavBar from "../NavBar/NavBar";
 import Footer from "../Footer/Footer";
+import axios from "axios";
 import './HomePage.css';
-
+import { useNavigate } from "react-router-dom";
 const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState("Tech & Code");
-
+  let [mentorsList, setMentorsList] = useState([]);
+  const Navigate = useNavigate();
+  let [loading , setLoading] = useState(true);
   const categories = [
     { name: "Tech & Code", count: "180+ Mentors", icon: "💻" },
     { name: "UI/UX & Product", count: "120+ Mentors", icon: "🎨" },
@@ -14,35 +17,22 @@ const HomePage = () => {
     { name: "Interview Prep", count: "140+ Mentors", icon: "🎯" },
   ];
 
-  const mentorsList = [
-    {
-      name: "Aarav Sharma",
-      role: "Ex-Google Software Engineer",
-      rating: "4.95",
-      sessions: "340+",
-      skills: ["System Design", "React", "DS & Algo"],
-      img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb",
-      price: "₹2,499/session",
-    },
-    {
-      name: "Rhea Kapoor",
-      role: "Lead UI/UX Designer at Stripe",
-      rating: "5.0",
-      sessions: "210+",
-      skills: ["Figma", "Portfolio Review", "UX Strategy"],
-      img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2",
-      price: "₹2,999/session",
-    },
-    {
-      name: "Vikram Malhotra",
-      role: "AI Scientist & Tech Lead",
-      rating: "4.90",
-      sessions: "180+",
-      skills: ["LLMs", "Python", "Machine Learning"],
-      img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
-      price: "₹3,299/session",
-    },
-  ];
+  let fetchData = async () => {
+    try {
+      console.log("Fetching mentors data...");
+      let res = await axios.get("https://lexbridge-m1oz.onrender.com/mentor/allMentors", { withCredentials: true });
+      setMentorsList(res.data.mentors || []);
+      console.log(res.data.mentors);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+    useEffect(() => {
+      fetchData();
+    }, []);
 
   return (
     <div className="bg-[#0f172a] text-slate-100 min-h-screen font-gilroy selection:bg-blue-600 selection:text-white">
@@ -135,27 +125,40 @@ const HomePage = () => {
             </h2>
             <p className="text-slate-400 text-sm mt-1">Book direct consultations with experienced mentors.</p>
           </div>
-          <button className="text-sm font-semibold text-amber-400 hover:underline self-start md:self-auto">
+          <button className="text-sm font-semibold text-amber-400 hover:underline self-start md:self-auto" onClick={()=>Navigate('/mentors')}>
             View All Mentors →
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {mentorsList.map((mentor, index) => (
-            <div
-              key={index}
-              className="rounded-2xl bg-slate-800/40 border border-slate-700/70 p-5 hover:border-slate-600 transition-all duration-200 flex flex-col justify-between"
-            >
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="rounded-2xl bg-slate-800/40 border border-slate-700/70 p-5">
+                <div className="animate-pulse">
+                  <div className="w-14 h-14 bg-slate-600 rounded-xl mb-4"></div>
+                  <div className="h-4 bg-slate-600 rounded mb-2"></div>
+                  <div className="h-3 bg-slate-600 rounded w-2/3"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {mentorsList.slice(0, 3).map((mentor, index) => (
+              <div
+                key={index}
+                className="rounded-2xl bg-slate-800/40 border border-slate-700/70 p-5 hover:border-slate-600 transition-all duration-200 flex flex-col justify-between"
+              >
               <div>
                 <div className="flex items-center gap-4 mb-4">
                   <img
-                    src={mentor.img}
+                    src={mentor.imageUrl}
                     alt={mentor.name}
                     className="w-14 h-14 rounded-xl object-cover border border-slate-700"
                   />
                   <div>
-                    <h3 className="text-base font-bold text-slate-100">{mentor.name}</h3>
-                    <p className="text-xs text-slate-400">{mentor.role}</p>
+                    <h3 className="text-base font-bold text-slate-100">{mentor.username}</h3>
+                    <p className="text-xs text-slate-400">{mentor.specialization}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-xs font-semibold text-amber-400">★ {mentor.rating}</span>
                       <span className="text-slate-600">•</span>
@@ -165,14 +168,14 @@ const HomePage = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-1.5 mb-5">
-                  {mentor.skills.map((skill, sIdx) => (
+                  {/* {mentor.skills.map((skill, sIdx) => (
                     <span
                       key={sIdx}
                       className="text-[11px] font-medium px-2.5 py-1 rounded-md bg-slate-800 border border-slate-700/50 text-slate-300"
                     >
                       {skill}
                     </span>
-                  ))}
+                  ))} */}
                 </div>
               </div>
 
@@ -187,7 +190,10 @@ const HomePage = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div>)}
+
+
+
       </section>
 
       {/* Value Proposition Cards */}

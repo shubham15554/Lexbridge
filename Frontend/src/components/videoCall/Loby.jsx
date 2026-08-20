@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState,  } from "react";
 import { io } from "socket.io-client";
-
+import {useParams} from 'react-router-dom';
 
 
 import { IconButton, Stack, Tooltip } from '@mui/material';
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useContext } from "react";
 import {SocketContext} from "../context/socketContext";
+import { AuthContext } from "../context/authContext";
 
 
 function Loby() {
@@ -25,9 +26,13 @@ function Loby() {
     let connectionRef = useRef();
     let socketIdRef = useRef();
 
+    const { sessionId } = useParams();
+
+    console.log("session id is getting printed", sessionId);
     let Navigate = useNavigate();
     let {socket} = useContext(SocketContext); 
-    const server_url = 'https://lexbridge-m1oz.onrender.com/';
+    let {user , loading } = useContext(AuthContext)
+    const server_url = 'http://localhost:8000';
 
     const peerConfigConnections = {
         'iceServers': [
@@ -112,7 +117,7 @@ function Loby() {
 
        
 
-            socket.emit('join-call', window.location.href);
+            socket.emit('join-call', window.location.href, user, sessionId);
             socketIdRef.current = socket.id;
 
             socket.on('user-joined', async (id) => {
