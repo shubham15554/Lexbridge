@@ -32,7 +32,7 @@ function Loby() {
     let Navigate = useNavigate();
     let {socket} = useContext(SocketContext); 
     let {user , loading } = useContext(AuthContext)
-    const server_url = 'http://https://lexbridge-m1oz.onrender.com:8000';
+    const server_url = 'http://https://lexbridge-m1oz.onrender.com';
 
     const peerConfigConnections = {
         'iceServers': [
