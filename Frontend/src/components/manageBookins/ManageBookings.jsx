@@ -1,32 +1,32 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import NavBar from '../NavBar/NavBar'
+import { Clock, Calendar, Video, AlertCircle, Sparkles, User, MessageSquare, CheckCircle, XCircle } from "lucide-react";
+import NavBar from '../NavBar/NavBar';
 import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
-import { Clock, Calendar, Video, AlertCircle, Sparkles, User, MessageSquare, CheckCircle, XCircle } from "lucide-react";
+
+// Backend Base URL
+const BASE_URL = "https://lexbridge-m1oz.onrender.com";
 
 const ManageBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(new Date());
-  let {user } = useContext(AuthContext);
-  let Navigate= useNavigate();
-  
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   useEffect(() => {
-    console.log(user);
     const timer = setInterval(() => setNow(new Date()), 60000);
     return () => clearInterval(timer);
-    
   }, []);
 
+  // Fetch Bookings from API
   const fetchBookings = async () => {
     try {
-      const res = await axios.get("https://lexbridge-m1oz.onrender.com/session/manageBookings",{
-      withCredentials: true
-    });
-      console.log("bookings ...........");
-      console.log(res);
-      setBookings(res.data.bookings || []);
+      const res = await axios.get(`${BASE_URL}/session/myBookings`, {
+        withCredentials: true
+      });
+      setBookings(res.data.myBookings || res.data.bookings || []);
     } catch (e) {
       console.error("Fetch error:", e);
     } finally {
@@ -37,6 +37,14 @@ const ManageBookings = () => {
   useEffect(() => {
     fetchBookings();
   }, []);
+  const handleJoin = async (b) => {
+    try {
+      const sessionId = b._id;
+      navigate(b.meetingLink);
+    } catch (err) {
+      console.error("Error marking join status:", err);
+    }
+  };
 
 
   const parseDateTime = (dateStr, timeStr) => {
@@ -49,16 +57,16 @@ const ManageBookings = () => {
       if (modifier === "PM" && h < 12) h += 12;
       if (modifier === "AM" && h === 12) h = 0;
 
-      const dateObj = new Date(dateStr); 
-      dateObj.setHours(h, parseInt(minutes, 10), 0);
+      const [year, month, day] = dateStr.split("-").map(Number);
+      const dateObj = new Date(year, month - 1, day); 
+      dateObj.setHours(h, parseInt(minutes, 10), 0, 0);
       return dateObj;
     } catch (e) {
       return null;
     }
   };
 
- 
-    // Check if session is currently active
+  // Check if session is currently active
   const isJoinable = (dateStr, timeStr, status) => {
     // if (b.status === "completed" || b.status === "cancelled" || b.status === "missed" || b.status === "mentor_absent" || b.status === "student_absent") {
     //     return false;
@@ -74,15 +82,7 @@ const ManageBookings = () => {
     return true;
   };
 
-  if (loading) {
-    return (
-        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/80 backdrop-blur-sm">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        </div>
-    );
-  }
-
- return (
+  return (
     <div className="bg-[#0f172a] min-h-screen text-slate-100 font-sans selection:bg-blue-600 selection:text-white"> 
       <NavBar />
       
@@ -179,21 +179,22 @@ const ManageBookings = () => {
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                           <CheckCircle className="w-3.5 h-3.5" /> Completed
                         </span>
-                      ) : b.status === "user-absent" ? (
+                        
+                      ): b.status === "mentor_absent" ? (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                           <XCircle className="w-3.5 h-3.5" /> Missed
+                        </span>
+
+                      ): b.status === "user_absent" ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          <XCircle className="w-3.5 h-3.5" /> Missed
+                      </span>
+                        
+                      ) : b.status === "missed" ? (
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20">
                           <XCircle className="w-3.5 h-3.5" /> Missed
                         </span>
-                      ) : b.status === "mentor-absent" ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                          <XCircle className="w-3.5 h-3.5" /> Missed
-                        </span>
-                      ) 
-                      : b.status === "missed" ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                          <XCircle className="w-3.5 h-3.5" /> Missed
-                        </span>
-                      ) 
-                      : (
+                      ) : (
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-400 border border-slate-700/50">
                           Upcoming
                         </span>
