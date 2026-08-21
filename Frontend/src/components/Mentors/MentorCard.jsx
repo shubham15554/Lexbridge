@@ -94,7 +94,7 @@ export const MentorCard = ({ mentor }) => {
             >
               <div className="flex items-center gap-3">
                 <MessageSquare className="w-4 h-4 text-blue-400 transition-transform group-hover/btn:scale-110" /> 
-                <span className="text-sm text-slate-200 font-medium">Chat Session</span>
+                <span className="text-sm text-slate-200 font-medium">Book a chat session</span>
               </div>
             </button>
 
@@ -105,7 +105,7 @@ export const MentorCard = ({ mentor }) => {
             >
               <div className="flex items-center gap-3">
                 <Video className="w-4 h-4 text-blue-400 transition-transform group-hover/btn:scale-110" /> 
-                <span className="text-sm text-slate-200 font-medium">Video Call</span>
+                <span className="text-sm text-slate-200 font-medium">Book a video call session</span>
               </div>
             </button>
           </div>

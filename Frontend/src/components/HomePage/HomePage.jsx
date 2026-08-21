@@ -59,7 +59,7 @@ const HomePage = () => {
 
         {/* Action Buttons */}
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-          <button className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 font-semibold text-white text-base transition-all shadow-md active:scale-95">
+          <button onClick={()=>Navigate("/mentors")} className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 font-semibold text-white text-base transition-all shadow-md active:scale-95">
             Find Your Mentor
           </button>
           <button className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700/80 border border-slate-700 font-semibold text-slate-200 text-base transition-all">
@@ -179,7 +179,7 @@ const HomePage = () => {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+              {/* <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
                 <div>
                   <p className="text-[10px] text-slate-400 uppercase font-medium">Pricing</p>
                   <p className="text-sm font-bold text-slate-100">{mentor.price}</p>
@@ -187,7 +187,8 @@ const HomePage = () => {
                 <button className="px-4 py-2 rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition-all text-xs font-semibold border border-blue-500/30">
                   Book Call
                 </button>
-              </div>
+              </div> */}
+              
             </div>
           ))}
         </div>)}

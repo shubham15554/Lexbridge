@@ -97,7 +97,7 @@ const App = () => {
         <Route path='/signup' element={<Signup />} />
         <Route path='/myBookings' element={<ProtectedRoute><MyBookings/></ProtectedRoute>  }/>
         <Route path='/manageBookings' element={<ProtectedRoute><ManageBookings/></ProtectedRoute>  }/>
-        <Route path='/chat/:roomId' element={<ProtectedRoute><Chat/></ProtectedRoute>} />
+        <Route path='/chat/:sessionId' element={<ProtectedRoute><Chat/></ProtectedRoute>} />
         <Route path='/video/:sessionId' element={<ProtectedRoute><Loby/></ProtectedRoute>} />
         </Routes>
         </SocketProvider>

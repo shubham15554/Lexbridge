@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { SocketContext } from '../context/socketContext';
 import { AuthContext } from "../context/authContext";
-
+import { useParams } from 'react-router-dom';
   
 import { Box, Paper, Typography, TextField, Button, Stack, Avatar, IconButton, InputBase, Divider } from '@mui/material';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
@@ -9,19 +9,18 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 const Chat = () => {
     
     const { socket } = useContext(SocketContext);
-    const {user} = useContext(AuthContext);
+    const {user, loading} = useContext(AuthContext);
     const [message, setMessage] = useState('');
     const [chatLog, setChatLog] = useState([]);
     const scrollRef = useRef(null);
-
-    const roomId = "aadfdfa"; 
+    const { sessionId } = useParams();
    
-    
+    console.log("session id" , sessionId)
     useEffect(() => {
       
         if (!socket) return;
 
-        socket.emit('join-chat', roomId);
+        socket.emit('join-chat', window.location.href , user , sessionId );
       
         const handleUserJoined = (id) => {
             console.log("New user connected:", id);
@@ -41,7 +40,7 @@ const Chat = () => {
             socket.off('user-joind-chat', handleUserJoined);
             socket.off('receive-message', handleReceiveMessage);
         };
-    }, [socket, roomId]);
+    }, [socket]);
 
 
     useEffect(() => {
@@ -55,12 +54,12 @@ const Chat = () => {
         if (message.trim() && socket) {
             const messageData = {
                 data: message,
-                path: roomId, 
-                sender: socket.id, 
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                sessionId: sessionId, 
+                sender: user._id, 
+                createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
 
-            socket.emit('send-message', messageData);
+            socket.emit('send-message', messageData , window.location.href);
             
             setChatLog((prev) => [...prev, messageData]);
             setMessage('');
@@ -104,7 +103,7 @@ return (
               LexBridge <span style={{ color: '#60a5fa', fontWeight: 400 }}>Mentorship</span>
             </Typography>
             <Typography variant="caption" sx={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <FiberManualRecordIcon sx={{ fontSize: 10 }} /> Active Room: {roomId}
+              <FiberManualRecordIcon sx={{ fontSize: 10 }} /> Active Room: {sessionId}
             </Typography>
           </Box>
         </Box>
@@ -120,7 +119,7 @@ return (
       }}>
         <Stack spacing={3}>
           {chatLog.map((msg, index) => {
-            const isMe = msg.sender === socket.id;
+            const isMe = msg.sender === user._id;
             return (
               <Box 
                 key={index} 

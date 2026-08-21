@@ -14,7 +14,7 @@ const userSchema = new Schema({
    },
    role: {
       type: String,
-      enum: ["user", "mentor", "admin"], // Teeno roles handle ho jayenge
+      enum: ["user", "mentor", "admin"],
       default: "user"
     },
    password: {

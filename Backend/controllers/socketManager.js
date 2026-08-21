@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import Session from "../models/session.js";
 import { configDotenv } from "dotenv";
+import Message from "../models/message.js";
 export const connectToSocket = (server)=>{
 
     const io = new Server(server , {
@@ -63,17 +64,55 @@ export const connectToSocket = (server)=>{
            
         });
 
-        socket.on('join-chat', (path) => {
-            socket.join(path);
-            socket.to(path).emit('user-joind-chat', socket.id);
+        socket.on('join-chat', async (path , user , sessionID) => {
+
+
+           try{
+                socket.join(path);
+                socket.to(path).emit('user-joind-chat', socket.id);
+
+                const currentUserId = user._id
+                const sess = await Session.findById(sessionID);
+
+            if (!sess) {
+               socket.emit('error-message', "Session not found");
+               return;
+            }
+            
+            if (currentUserId === sess.userId?.toString()) {
+               sess.isUserJoined = true;
+               sess.userJoinedAt = new Date();
+            } else if (currentUserId === sess.mentorId?.toString()) {
+                sess.isMentorJoined = true;
+                sess.mentorJoinedAt = new Date();
+            } else {
+                socket.emit('error-message', "You are not participant of this session");
+                return;
+            }   
+            await sess.save();
+
+            }
+            catch(err){
+                console.log(err);
+            }
+
+
+
+
+
         });
 
-        socket.on('send-message' , (message)=>{
-            console.log("Message received on server:", message);
-            let {data  , path} = message;
-    
-            socket.to(path).emit("receive-message", message);
+        socket.on('send-message' , async (message, path)=>{
 
+          try{
+            console.log("Message received on server:", message);
+            const newMessage = await Message.create(message);
+            socket.to(path).emit("receive-message", newMessage);
+          }
+
+          catch(err){
+            console.log(err);
+          }
         });
 
 
