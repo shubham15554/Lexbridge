@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import Session from "../models/session.js";
 import { configDotenv } from "dotenv";
 import Message from "../models/message.js";
+import { datacatalog } from "googleapis/build/src/apis/datacatalog/index.js";
 export const connectToSocket = (server)=>{
 
     const io = new Server(server , {
@@ -105,8 +106,13 @@ export const connectToSocket = (server)=>{
         socket.on('send-message' , async (message, path)=>{
 
           try{
+            let {sessionID , sender , data} = message
             console.log("Message received on server:", message);
-            const newMessage = await Message.create(message);
+            const newMessage = await Message.create({
+                sessionId: sessionID,
+                sender: sender,
+                data : data
+            });
             socket.to(path).emit("receive-message", newMessage);
           }
 
