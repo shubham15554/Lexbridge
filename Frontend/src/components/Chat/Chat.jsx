@@ -56,7 +56,6 @@ const Chat = () => {
                 data: message,
                 sessionId: sessionId, 
                 sender: user._id, 
-                createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
 
             socket.emit('send-message', messageData , window.location.href);
