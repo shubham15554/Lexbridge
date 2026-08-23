@@ -68,16 +68,16 @@ const MyBookings = () => {
 
   // Check if session is currently active
   const isJoinable = (dateStr, timeStr, status) => {
-    // if (status === "completed" || status === "cancelled" || status === "missed" || status === "mentor_absent" || status === "student_absent") {
-    //     return false;
-    // }
-    // const start = parseDateTime(dateStr, timeStr);
-    // if (!start) return false;
+    if (status === "completed" || status === "cancelled" || status === "missed" || status === "mentor_absent" || status === "student_absent") {
+        return false;
+    }
+    const start = parseDateTime(dateStr, timeStr);
+    if (!start) return false;
 
-    // const bufferStart = new Date(start.getTime() - 5 * 60000); 
-    // const end = new Date(start.getTime() + 60 * 60000);       
+    const bufferStart = new Date(start.getTime() - 5 * 60000); 
+    const end = new Date(start.getTime() + 60 * 60000);       
     
-    // return now >= bufferStart && now <= end;
+    return now >= bufferStart && now <= end;
    
     return true;
   };
