@@ -5,10 +5,10 @@
 </p>
 
 ---
-
 ### 🎥 Project Demo
-Watch the complete walkthrough and feature demonstration of Lexbridge here: 
-👉 [Watch Lexbridge Demo on YouTube](https://www.youtube.com/watch?v=4Tv48iYLdhA)
+[![Lexbridge Project Demo](https://img.youtube.com/vi/4Tv48iYLdhA/maxresdefault.jpg)](https://www.youtube.com/watch?v=4Tv48iYLdhA)
+
+
 ---
 
 ## ✨ Key Features
