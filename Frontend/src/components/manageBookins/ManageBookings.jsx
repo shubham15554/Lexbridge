@@ -99,13 +99,13 @@ const ManageBookings = () => {
             </h1>
           </div>
 
-          <div className="flex items-center gap-2 bg-slate-800/80 border border-slate-700/60 px-4 py-2 rounded-xl self-start sm:self-auto backdrop-blur-md">
+          {/* <div className="flex items-center gap-2 bg-slate-800/80 border border-slate-700/60 px-4 py-2 rounded-xl self-start sm:self-auto backdrop-blur-md">
             <Clock className="w-4 h-4 text-blue-400 animate-pulse" />
             <span className="text-xs text-slate-400 font-medium">Local Time:</span>
             <span className="text-xs text-slate-200 font-mono font-bold">
               {now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
-          </div>
+          </div> */}
         </div>
 
         {/* Content */}
@@ -143,7 +143,8 @@ const ManageBookings = () => {
         ) : (
           <div className="grid gap-5">
             {bookings.map((b) => {
-              const joinActive = isJoinable(b.date, b.timeSlot, b.status);
+                            let joinActive = false;
+              if(b.status == 'confirmed') joinActive = true;
 
               return (
                 <div 

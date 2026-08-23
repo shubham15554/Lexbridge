@@ -6,10 +6,9 @@
 
 ---
 
-## 🎥 Project Demo
-> *[Insert Video / GIF Demo Here]*  
-> *(Watch the core workflow of booking, real-time video streaming, and automated status handling)*
-
+### 🎥 Project Demo
+Watch the complete walkthrough and feature demonstration of Lexbridge here: 
+👉 [Watch Lexbridge Demo on YouTube](https://www.youtube.com/watch?v=4Tv48iYLdhA)
 ---
 
 ## ✨ Key Features
